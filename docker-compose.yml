@@ -1,0 +1,78 @@
+version: "3.7"
+
+services: 
+    # The API container
+    plumber:
+        # This tells Docker to build from a Dockerfile in the plumber/thing folder
+        build: 
+            context: ./plumber-thing
+            dockerfile: Dockerfile
+        # This gives the container a nice name
+        container_name: plumber
+        # Make sure this container keeps going
+        restart: unless-stopped
+        # Add this container to a cross-container network
+        networks: 
+            - app-network
+
+    # The nginx webserver container
+    webserver: 
+        # Get this image from Docker Hub
+        image: nginx:mainline-alpine
+        container_name: webserver
+        restart: unless-stopped
+        # Open up ports 80 (http) and 443 (https)
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - web-root:/var/www/html
+            - ./nginx-conf:/etc/nginx/conf.d
+            - certbot-etc:/etc/letsencrypt
+            - certbot-var:/var/lib/letsencrypt
+            - dhparam:/etc/ssl/certs
+        # Make it so this runs after the plumber app container is built
+        depends_on:
+            - plumber
+        networks:
+            - app-network
+
+    # A container for running certbot and getting/renewing Let's Encrypt certificates
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        volumes:
+            - certbot-etc:/etc/letsencrypt
+            - certbot-var:/var/lib/letsencrypt
+            - web-root:/var/www/html
+        depends_on: 
+            - webserver
+        # Use this command to actually renew things
+        command: certonly --webroot --webroot-path=/var/www/html --email yourname@example.com --agree-tos --no-eff-email --force-renewal -d api.example.com
+        # Use this command for testing/staging
+        # command: certonly --webroot --webroot-path=/var/www/html --email yourname@example.com --agree-tos --no-eff-email --staging -d api.example.com
+
+# Set up cross-container volumes
+volumes:
+    certbot-etc:
+    certbot-var:
+    # This folder doesn't ever actually get served and I don't know if it's 
+    # really necessary, but it's necessary for the certbot container command, 
+    # so it's here :shrug:
+    web-root:
+        driver: local
+        driver_opts:
+            type: none
+            device: /home/username_on_server/www/
+            o: bind
+    dhparam:
+        driver: local
+        driver_opts: 
+            type: none
+            device: /home/username_on_server/dhparam/
+            o: bind
+
+# Set up cross-container network
+networks:
+    app-network:
+        driver: bridge

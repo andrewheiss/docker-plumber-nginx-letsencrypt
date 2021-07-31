@@ -3,7 +3,7 @@ version: "3.7"
 services: 
     # The API container
     plumber:
-        # This tells Docker to build from a Dockerfile in the plumber/thing folder
+        # This tells Docker to build from a Dockerfile in the plumber-thing folder
         build: 
             context: ./plumber-thing
             dockerfile: Dockerfile

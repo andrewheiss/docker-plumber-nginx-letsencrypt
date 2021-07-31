@@ -42,7 +42,7 @@ This is hard though! The [plumber hosting documentation](https://www.rplumber.io
 
 That last option seems almost ideal. I want to host a single API inside a Docker that is served through nginx (also inside a Docker container), that's all magically orchestrated with Docker Compose. But there's no easy example of that basic setup.
 
-Additionally, none of the options in the plumber documentation show how to get this all working with HTTPS (which is important if you have POST endpoints). Getting HTTPS enabled is relatively easy with Let's Encrypt, which provides free SSL certificates, but getting that working with nginx inside a Docker container seems really really hard.
+Additionally, none of the options in the plumber documentation show how to get this all working with HTTPS (which is important if you have POST endpoints). Getting HTTPS enabled is relatively easy with [Let's Encrypt](https://letsencrypt.org/), which provides free SSL certificates, but getting that working with nginx inside a Docker container seems really really hard.
 
 ## The holy grail: containers for everything *and* HTTPS!
 

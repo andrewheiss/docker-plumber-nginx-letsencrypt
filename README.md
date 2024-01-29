@@ -1,5 +1,12 @@
 # Running a single containerized Plumber API on DigitalOcean with Docker Compose, nginx, and Let's Encrypt <!-- omit in toc -->
 
+> [!CAUTION]
+> This works, but it's complex! The Caddy webserver can handle HTTPS automatically, so there's no need for Let's Encrypt certbot stuff. You literally just need a Docker Compose file with two services: one for Plumber and one for Caddy. That's it. [See this newer repository to see an example](https://github.com/andrewheiss/docker-plumber-caddy).
+> 
+> If you want to use nginx + certbot and everything else here, that's fine and it'll work, but it's far easier to [just use Caddy](https://github.com/andrewheiss/docker-plumber-caddy).
+
+---
+
 > tl;dr: This repository contains a barebones example plumber API that lives in a Docker container that *also* works with an nginx Docker container that *also* works with a Let's Encrypt HTTPS certbot container that *also* all gets built and orchestrated with Docker Compose. It's basically the result of following [this DigitalOcean guide](https://www.digitalocean.com/community/tutorials/how-to-secure-a-containerized-node-js-application-with-nginx-let-s-encrypt-and-docker-compose), but substituting plumber for the example Node.js app they use.
 
 ---
